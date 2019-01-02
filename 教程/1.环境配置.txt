@@ -1,0 +1,97 @@
+﻿首先
+	sudo apt-get update
+1.安装python3.6
+	1.添加python3.6安装包,并且安装
+	sudo apt-get install software-properties-common
+	2.下载python3.6
+	sudo add-apt-repository ppa:jonathonf/python-3.6
+	sudo apt-get update
+	sudo apt-get install python3.6
+	3.修改系统默认python版本为3.6，并更新
+	cd /user/bin
+	rm python
+	ln -s python3.6m python
+2.安装pip
+
+	wget http://bootstrap.pypa.io/get-pip.py
+
+	sudo python3.6 get-pip.py
+
+	再检查目录就安装成功了。
+3.安装虚拟环境
+	sudo apt-get install python-virtualenv		//python2
+	sudo apt-get install python3-venv			//python3	
+
+	创建虚拟环境
+	pyvenv env	//env是你的环境目录
+	激活环境
+	source env/bin/activate
+	命令行前显示（env）
+	(env) root@wxf:/work/flask# 
+	返回全局环境
+	deactivate
+	
+	在虚拟环境中安装flask
+	pip install flask
+	
+4.前端模板引擎jinja2：
+	pip install jinja2
+5.安装myaql
+	sudo apt-get install mysql-server
+	  输入数据库密码
+	sudo apt-get install mysql-client
+	sudo apt-get install libmysqlclient-dev
+	测试是否安装成功
+		sudo netstat -tap | grep mysql
+	    输出 tcp        0      0 localhost:mysql         *:*                     LISTEN      5185/mysqld 
+		
+	修改配置文件
+	sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+	
+	#找到将bind-address = 127.0.0.1注销​
+	#bind-address            = 127.0.0.1
+	将字符编码设置为UTF-8
+	默认情况下，MySQL的字符集是latin1，因此在存储中文的时候，会出现乱码的情况，所以我们需要把字符集统一改成UTF-8。
+	打开mysql配置文件
+	b） 在[client]下追加：
+        default-character-set=utf8
+	c） 在[mysqld]下追加：
+        character-set-server=utf8
+	d） 在[mysql]下追加：
+        default-character-set=utf8
+	
+	
+	
+	重新登录mysql -uroot -p
+	授权密码
+	grant all privileges on *.* to 'root'@'%' identified by '123';
+	立即生效
+	flush privileges;
+	exit;
+	登录查看编码格式
+	mysql -uroot -p
+	mysql> show variables like '%char%';
+			+--------------------------+----------------------------+
+			| Variable_name            | Value                      |
+			+--------------------------+----------------------------+
+			| character_set_client     | utf8                       |
+			| character_set_connection | utf8                       |
+			| character_set_database   | utf8                       |
+			| character_set_filesystem | binary                     |
+			| character_set_results    | utf8                       |
+			| character_set_server     | utf8                       |
+			| character_set_system     | utf8                       |
+			| character_sets_dir       | /usr/share/mysql/charsets/ |
+			+--------------------------+----------------------------+
+			8 rows in set (0.00 sec)
+	5.在Ubuntu系统中，你已经安装了mysql，即你使用sudo apt-get install mysql-server mysql-client然而使用C语言访问mysql数据库时，却发现出现了如下错误：
+
+	fatal error: mysql.h: No such file or directory
+	出现这个错误是因为系统没有安装mysql安装包 sudo apt-get install libmysql++-dev即可 编译时需要加连接-lmysqlclient.
+
+	编译源程序的时候，如下命令：
+
+	gcc -I/usr/include/mysql *.c -L/usr/lib/mysql -lmysqlclient -o *
+	*号代表你说编译源程序的名字。
+6.MySQL的Python异步驱动程序aiomysql：
+	pip3 install aiomysql
